@@ -13,13 +13,13 @@ const rateLimiter = require('express-rate-limit')
 
 
 //package
-app.set('trust proxy', 1) 
-app.use(
-    rateLimiter({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 100 // limit each API request by 100 per windowMs
-    })
-    )
+// app.set('trust proxy', 1) 
+// app.use(
+//     rateLimiter({
+//         windowMs: 15 * 60 * 1000, // 15 minutes
+//         max: 100 // limit each API request by 100 per windowMs
+//     })
+//     )
 app.use(express.json())
 app.use(helmet())
 app.use(cors())
