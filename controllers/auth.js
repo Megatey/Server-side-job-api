@@ -9,8 +9,12 @@ const register = async (req, res) => {
         const token = await user.createJwT()
         res.status(StatusCodes.CREATED).json({status: 'Success', username: user.name, token})
     } catch (error) {
-        console.log(error, 'something occured')
-        res.status(StatusCodes.BAD_REQUEST).json({msg: 'Internal Error'})
+        console.log( 'something occured')
+        if(error.code === 11000) {
+        res.status(500).json({msg: 'Email Address already exist'})
+        return
+        }
+        res.status(500).json({msg: 'Internal Error'})
     }
 }
 
