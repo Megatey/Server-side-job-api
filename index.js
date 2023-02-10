@@ -21,7 +21,8 @@ const xss = require('xss-clean')
 //     })
 //     )
 index.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    methods: ["POST", "GET", "PATCH", "DELETE"]
   }));
 index.use(express.json())
 index.use(helmet())
