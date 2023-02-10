@@ -20,9 +20,12 @@ const xss = require('xss-clean')
 //         max: 100 // limit each API request by 100 per windowMs
 //     })
 //     )
+const corsOption = {
+    origin: ['http://localhost:3000'],
+};
+app.use(cors(corsOption));
 index.use(express.json())
 index.use(helmet())
-index.use(cors())
 index.use(xss())
 
 index.get('/', (req, res) => {
