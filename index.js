@@ -23,7 +23,7 @@ const xss = require('xss-clean')
 const corsOption = {
     origin: ['http://localhost:3000'],
 };
-app.use(cors(corsOption));
+index.use(cors(corsOption));
 index.use(express.json())
 index.use(helmet())
 index.use(xss())
