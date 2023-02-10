@@ -21,24 +21,29 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const {email, password} = req.body
-    if(!email || !password) {
-        res.status(StatusCodes.BAD_REQUEST).json('Please Provide email and password')
-        return;
-    }
-
-    const user = await User.findOne({email})
-    if(!user) {
-        res.status(StatusCodes.UNAUTHORIZED).json({error: true, msg: 'Invalid Credentials'})
-        return;
+    try {
+        if(!email || !password) {
+            res.status(StatusCodes.BAD_REQUEST).json('Please Provide email and password')
+            return;
+        }
+    
+        const user = await User.findOne({email})
+        if(!user) {
+            res.status(StatusCodes.UNAUTHORIZED).json({error: true, msg: 'Invalid Credentials'})
+            return;
+        }
+        
+        const isPasswordCorrect = await user.comparePassword(password)
+        if(!isPasswordCorrect) {
+            res.status(StatusCodes.UNAUTHORIZED).json({error: true, msg: 'Invalid Credentials'})
+            return;
+        }
+        const token = await user.createJwT()
+        res.status(StatusCodes.OK).json({status: true, username: user.name, token})
+    } catch (error) {
+        res.status(500).json({msg: 'Internal Error'})
     }
     
-    const isPasswordCorrect = await user.comparePassword(password)
-    if(!isPasswordCorrect) {
-        res.status(StatusCodes.UNAUTHORIZED).json({error: true, msg: 'Invalid Credentials'})
-        return;
-    }
-    const token = await user.createJwT()
-    res.status(StatusCodes.OK).json({status: 'Success', username: user.name, token})
 }
 
 module.exports = {register, login}
