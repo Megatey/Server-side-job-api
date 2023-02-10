@@ -3,8 +3,15 @@ const Job = require('../models/Job')
 
 const getAllJobs = async (req, res) => {
     //The code below is for getting all job request create by the user and sorting it by the date it was created
-    const jobs = await Job.find({ createdBy: req.user.userId }).sort('createdAt')
-    res.status(StatusCodes.OK).json({ jobs, count: jobs?.length })
+    try {
+        const jobs = await Job.find({ createdBy: req.user.userId }).sort('createdAt')
+        if(!jobs) {
+            res.status(404).json({status: false, msg: "No Job Found"})
+        }
+        res.status(StatusCodes.OK).json({status: true, jobs, count: jobs?.length })
+    } catch(error) {
+        res.status(500).json({ status: false, msg: "Internal Error"})
+    }
 }
 
 const getJob = async (req, res) => {
