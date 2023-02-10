@@ -7,7 +7,7 @@ const register = async (req, res) => {
     try {
         const user = await User.create({...req.body})
         const token = await user.createJwT()
-        res.status(StatusCodes.CREATED).json({status: 'Success', username: user.name, token})
+        res.status(StatusCodes.CREATED).json({status: true, username: user.name, token})
     } catch (error) {
         console.log( 'something occured')
         if(error.code === 11000) {
