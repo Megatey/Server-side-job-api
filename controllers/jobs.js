@@ -41,16 +41,16 @@ const createJob = async (req, res) => {
 }
 
 const updateJob = async (req, res) => {
-    const { body: { company, position }, user: { userId }, params: { id: jobId } } = req
+    const { body: { status }, user: { userId }, params: { id: jobId } } = req
 
-    if (company === '' || position === '') {
-        return res.status(400).json({
-            status: false,
-            meassage: 'Company or Postion fileds cannot be empty'
-        })
-    }
-
-    const job = await Job.findByIdAndUpdate({ _id: jobId, createdBy: userId }, req.body, { new: true, runValidators: true })
+    // if (company === '' || position === '') {
+    //     return res.status(400).json({
+    //         status: false,
+    //         meassage: 'Company or Postion fileds cannot be empty'
+    //     })
+    // }
+    try {
+         const job = await Job.findByIdAndUpdate({ _id: jobId, createdBy: userId }, {status: status}, { new: true, runValidators: true })
     if (!job) {
         return res.status(404).json({
             status: false,
@@ -62,6 +62,9 @@ const updateJob = async (req, res) => {
         message:'Update Successfully',
         data: job,
     })
+    } catch (error) {
+        res.status(500).json({ status: false, msg: "Internal Error"})
+    }
 }
 
 const deleteJob = async (req, res) => {
