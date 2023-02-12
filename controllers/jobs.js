@@ -35,8 +35,15 @@ const getJob = async (req, res) => {
 
 const createJob = async (req, res) => {
     req.body.createdBy = req.user.userId
+    try {
     const job = await Job.create(req.body)
-    return res.status(StatusCodes.CREATED).json(job)
+    if(job) {
+        return res.status(StatusCodes.CREATED).json({status: true, job: job})
+    }
+    res.status(400).json({ status: false, msg: "No job created, server error try again."})
+    } catch(error) {
+        res.status(500).json({ status: false, msg: "Internal Error"})
+    }
     // console.log(req.user)
 }
 
@@ -69,17 +76,21 @@ const updateJob = async (req, res) => {
 
 const deleteJob = async (req, res) => {
     const {user: { userId }, params: { id: jobId } } = req
-    const job = await Job.findByIdAndRemove({_id:jobId, createdBy:userId})
-    if (!job) {
-        return res.status(404).json({
-            status: false,
-            message: `No job with id ${jobId}`
+    try {
+        const job = await Job.findByIdAndRemove({_id:jobId, createdBy:userId})
+        if (!job) {
+            return res.status(404).json({
+                status: false,
+                message: `No job with id ${jobId}`
+            })
+        }
+        res.status(StatusCodes.OK).json({
+            status: true,
+            message:'Deleted Successfully'
         })
+    } catch(error) {
+        res.status(500).json({ status: false, msg: "Internal Error"})
     }
-    res.status(StatusCodes.OK).json({
-        status: true,
-        message:'Deleted Successfully'
-    })
 }
 
 module.exports = {
