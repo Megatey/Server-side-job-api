@@ -35,6 +35,10 @@ const getJob = async (req, res) => {
 
 const createJob = async (req, res) => {
     req.body.createdBy = req.user.userId
+    const {company, position} = req.body
+    if(!company || !position) {
+        res.status(401).json({ status: false, msg: "Please provide company or position"})
+    }
     try {
     const job = await Job.create(req.body)
     if(job) {
@@ -42,20 +46,13 @@ const createJob = async (req, res) => {
     }
     res.status(400).json({ status: false, msg: "No job created, server error try again."})
     } catch(error) {
+        console.log(error, "server error")
         res.status(500).json({ status: false, msg: "Internal Error"})
     }
-    // console.log(req.user)
 }
 
 const updateJob = async (req, res) => {
     const { body: { status }, user: { userId }, params: { id: jobId } } = req
-
-    // if (company === '' || position === '') {
-    //     return res.status(400).json({
-    //         status: false,
-    //         meassage: 'Company or Postion fileds cannot be empty'
-    //     })
-    // }
     try {
          const job = await Job.findByIdAndUpdate({ _id: jobId, createdBy: userId }, {status: status}, { new: true, runValidators: true })
     if (!job) {

@@ -21,7 +21,7 @@ const xss = require('xss-clean')
 //     })
 //     )
 index.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://job-repos.vercel.app',
     methods: ["POST", "GET", "PATCH", "DELETE"]
   }));
 index.use(express.json())
